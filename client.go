@@ -47,7 +47,7 @@ func (c *Client) NewRequest(method string, path string, body io.Reader) (*http.R
 // Returns the response status code and the body bytes.
 func (c *Client) Get(path string) (int, []byte, error) {
 
-	req, err := c.NewRequest("GET", c.BaseURL+path, nil)
+	req, err := c.NewRequest("GET", path, nil)
 	if err != nil {
 		return 0, nil, fmt.Errorf("failed to create request: %v", err)
 	}
@@ -78,7 +78,7 @@ func (c *Client) Post(path string, v any) (int, []byte, error) {
 		return 0, nil, fmt.Errorf("failed to marshal JSON: %v", err)
 	}
 
-	req, err := c.NewRequest("POST", c.BaseURL+path, bytes.NewBuffer(buf))
+	req, err := c.NewRequest("POST", path, bytes.NewBuffer(buf))
 	if err != nil {
 		return 0, nil, fmt.Errorf("failed to create request: %v", err)
 	}
@@ -109,7 +109,7 @@ func (c *Client) Put(path string, v any) (int, []byte, error) {
 		return 0, nil, fmt.Errorf("failed to marshal JSON: %v", err)
 	}
 
-	req, err := c.NewRequest("PUT", c.BaseURL+path, bytes.NewBuffer(buf))
+	req, err := c.NewRequest("PUT", path, bytes.NewBuffer(buf))
 	if err != nil {
 		return 0, nil, fmt.Errorf("failed to create request: %v", err)
 	}
