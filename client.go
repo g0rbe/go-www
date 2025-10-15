@@ -6,124 +6,114 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 )
 
-type Client struct {
-	BaseURL        string          // Base URL (eg.: "https://example.com")
-	ContentType    string          // If set, sets the requests "Content-Type" header to the given value
-	Authenticators []Authenticator // A slice of Authenticators to authenticate the requests
+type Client http.Client
+
+// NewClient returns a new *[Client].
+func NewClient() *Client {
+
+	return (*Client)(&http.Client{})
 }
 
-func NewClient(baseUrl string, contentType string, authenticators ...Authenticator) *Client {
-	return &Client{
-		BaseURL:        strings.TrimSuffix(baseUrl, "/"),
-		ContentType:    contentType,
-		Authenticators: authenticators,
-	}
+// NewClientWithXApiKey returns a new *[Client] that
+// authenticates every request by setting the "X-Api-Key" header's value to the specified API key.
+func NewClientWithXApiKey(key string) *Client {
+	return (*Client)(&http.Client{Transport: &AuthenticationHeader{Key: "X-Api-Key", Value: key}})
 }
 
-// NewRequest returns a new [http.Request] with Content-Type header and authentication headers set.
-func (c *Client) NewRequest(method string, path string, body io.Reader) (*http.Request, error) {
+// Do sends an HTTP request and returns the respons status code, the response headers and the body bytes.
+func (c *Client) Do(req *http.Request) (int, http.Header, []byte, error) {
 
-	req, err := http.NewRequest(method, c.BaseURL+path, body)
+	resp, err := (*http.Client)(c).Do(req)
 	if err != nil {
-		return nil, err
-	}
-
-	if len(c.ContentType) != 0 {
-		req.Header.Set("Content-Type", c.ContentType)
-	}
-
-	for i := range c.Authenticators {
-		c.Authenticators[i].SetHeader(req)
-	}
-
-	return req, nil
-}
-
-// Get do a HTTP GET request to the  BaseURL + path.
-//
-// Returns the response status code and the body bytes.
-func (c *Client) Get(path string) (int, []byte, error) {
-
-	req, err := c.NewRequest("GET", path, nil)
-	if err != nil {
-		return 0, nil, fmt.Errorf("failed to create request: %v", err)
-	}
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return 0, nil, err
+		return 0, nil, nil, err
 	}
 	defer resp.Body.Close()
 
 	buf, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return 0, nil, fmt.Errorf("failed to read body: %v", err)
+		return 0, nil, nil, fmt.Errorf("failed to read body: %v", err)
 	}
 
-	return resp.StatusCode, buf, err
+	return resp.StatusCode, resp.Header, buf, err
 }
 
-// Post do a HTTP POST request to the BaseURL + path.
+// Get issues a HTTP GET request to the specified URL.
 //
-// The JSON encoded v is set to request body.
+// Returns the response status code, the response headers and the body bytes.
+func (c *Client) Get(url string) (int, http.Header, []byte, error) {
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return 0, nil, nil, fmt.Errorf("failed to create request: %v", err)
+	}
+
+	return c.Do(req)
+}
+
+// Post issues a HTTP POST request to the specified URL.
 //
-// Returns the response status code and the body bytes.
-func (c *Client) Post(path string, v any) (int, []byte, error) {
+// This function sets the "Content-Type" header to the specified value in contentType.
+//
+// Returns the response status code, the response headers and the body bytes.
+func (c *Client) Post(url string, contentType string, body io.Reader) (int, http.Header, []byte, error) {
+
+	req, err := http.NewRequest("POST", url, body)
+	if err != nil {
+		return 0, nil, nil, fmt.Errorf("failed to create request: %v", err)
+	}
+
+	req.Header.Set("Content-Type", contentType)
+
+	return c.Do(req)
+}
+
+// PostJSON issues a HTTP POST request to the specified URL.
+//
+// The JSON encoded v is marshalled set as the request body.
+// The "Content-Type" header in the request is set to [ContentTypeJSON].
+//
+// Returns the response status code, the response headers and the body bytes.
+func (c *Client) PostJSON(url string, v any) (int, http.Header, []byte, error) {
 
 	buf, err := json.Marshal(v)
 	if err != nil {
-		return 0, nil, fmt.Errorf("failed to marshal JSON: %v", err)
+		return 0, nil, nil, fmt.Errorf("failed to marshal JSON: %v", err)
 	}
 
-	req, err := c.NewRequest("POST", path, bytes.NewBuffer(buf))
-	if err != nil {
-		return 0, nil, fmt.Errorf("failed to create request: %v", err)
-	}
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return 0, nil, err
-	}
-	defer resp.Body.Close()
-
-	buf, err = io.ReadAll(resp.Body)
-	if err != nil {
-		return 0, nil, fmt.Errorf("failed to read body: %v", err)
-	}
-
-	return resp.StatusCode, buf, err
+	return c.Post(url, ContentTypeJSON, bytes.NewBuffer(buf))
 }
 
-// Put do a HTTP PUT request to the BaseURL + path.
+// Put issues a HTTP PUT request to the specified URL.
 //
-// The JSON encoded v is set to request body.
+// This function sets the "Content-Type" header to the specified value in contentType.
 //
-// Returns the response status code and the body bytes.
-func (c *Client) Put(path string, v any) (int, []byte, error) {
+// Returns the response status code, the response headers and the body bytes.
+func (c *Client) Put(url string, contentType string, body io.Reader) (int, http.Header, []byte, error) {
+
+	req, err := http.NewRequest("PUT", url, body)
+	if err != nil {
+		return 0, nil, nil, fmt.Errorf("failed to create request: %v", err)
+	}
+
+	req.Header.Set("Content-Type", contentType)
+
+	return c.Do(req)
+}
+
+// PutJSON issues a HTTP PUT request to the specified URL.
+//
+// The JSON encoded v is marshalled set as the request body.
+// The "Content-Type" header in the request is set to [ContentTypeJSON].
+//
+// Returns the response status code, the response headers and the body bytes.
+func (c *Client) PutJSON(url string, v any) (int, http.Header, []byte, error) {
 
 	buf, err := json.Marshal(v)
 	if err != nil {
-		return 0, nil, fmt.Errorf("failed to marshal JSON: %v", err)
+		return 0, nil, nil, fmt.Errorf("failed to marshal JSON: %v", err)
 	}
 
-	req, err := c.NewRequest("PUT", path, bytes.NewBuffer(buf))
-	if err != nil {
-		return 0, nil, fmt.Errorf("failed to create request: %v", err)
-	}
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return 0, nil, err
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return 0, nil, fmt.Errorf("failed to read body: %v", err)
-	}
-
-	return resp.StatusCode, body, nil
+	return c.Put(url, ContentTypeJSON, bytes.NewBuffer(buf))
 }
