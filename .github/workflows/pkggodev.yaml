@@ -5,7 +5,7 @@ on:
 
 jobs:
   pull-new-commit:
-    runs-on: ubuntu-latest
+    runs-on: debian
 
     steps:
       - name: Setup Go
@@ -18,5 +18,5 @@ jobs:
         run: mkdir newmod && cd newmod && go mod init newmod
 
       - name: Install dependencies
-        run: cd newmod && go get git.gorbe.io/go/www@${{ gitea.sha }}
+        run: cd newmod && go get git.gorbe.io/go/www@${{ github.sha }}
       
