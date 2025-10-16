@@ -9,4 +9,9 @@ func ExampleAuthenticationHeader() {
 	client := ah.Client()
 
 	client.Get("https://example.com/api/path")
+	// GET /api/path HTTP/3
+	//
+	// Host: example.com
+	// X-Api-Key: sup3rs3cr3t
+	// ...
 }
