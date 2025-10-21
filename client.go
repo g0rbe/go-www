@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"strings"
 )
 
 type Client http.Client
@@ -22,7 +24,7 @@ func NewClientWithAuthentication(roundtrip http.RoundTripper) *Client {
 	return (*Client)(&http.Client{Transport: roundtrip})
 }
 
-// Do sends an HTTP request and returns the respons status code, the response headers and the body bytes.
+// Do sends an HTTP request and returns *Response].
 func (c *Client) Do(req *http.Request) (*Response, error) {
 
 	resp, err := (*http.Client)(c).Do(req)
@@ -34,8 +36,6 @@ func (c *Client) Do(req *http.Request) (*Response, error) {
 }
 
 // Get issues a HTTP GET request to the specified URL.
-//
-// Returns the response status code, the response headers and the body bytes.
 func (c *Client) Get(url string) (*Response, error) {
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -49,8 +49,6 @@ func (c *Client) Get(url string) (*Response, error) {
 // Post issues a HTTP POST request to the specified URL.
 //
 // This function sets the "Content-Type" header to the specified value in contentType.
-//
-// Returns the response status code, the response headers and the body bytes.
 func (c *Client) Post(url string, contentType string, body io.Reader) (*Response, error) {
 
 	req, err := http.NewRequest("POST", url, body)
@@ -67,8 +65,6 @@ func (c *Client) Post(url string, contentType string, body io.Reader) (*Response
 //
 // The JSON encoded v is marshalled set as the request body.
 // The "Content-Type" header in the request is set to [ContentTypeJSON].
-//
-// Returns the response status code, the response headers and the body bytes.
 func (c *Client) PostJSON(url string, v any) (*Response, error) {
 
 	buf, err := json.Marshal(v)
@@ -82,8 +78,6 @@ func (c *Client) PostJSON(url string, v any) (*Response, error) {
 // Put issues a HTTP PUT request to the specified URL.
 //
 // This function sets the "Content-Type" header to the specified value in contentType.
-//
-// Returns the response status code, the response headers and the body bytes.
 func (c *Client) Put(url string, contentType string, body io.Reader) (*Response, error) {
 
 	req, err := http.NewRequest("PUT", url, body)
@@ -100,8 +94,6 @@ func (c *Client) Put(url string, contentType string, body io.Reader) (*Response,
 //
 // The JSON encoded v is marshalled set as the request body.
 // The "Content-Type" header in the request is set to [ContentTypeJSON].
-//
-// Returns the response status code, the response headers and the body bytes.
 func (c *Client) PutJSON(url string, v any) (*Response, error) {
 
 	buf, err := json.Marshal(v)
