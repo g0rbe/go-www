@@ -111,3 +111,11 @@ func (c *Client) PutJSON(url string, v any) (*Response, error) {
 
 	return c.Put(url, ContentTypeJSON, bytes.NewBuffer(buf))
 }
+
+// PostForm issues a POST to the specified URL, with data's keys and
+// values URL-encoded as the request body.
+//
+// The Content-Type header is set to `application/x-www-form-urlencoded`.
+func (c *Client) PostForm(url string, data url.Values) (*Response, error) {
+	return c.Post(url, "application/x-www-form-urlencoded", strings.NewReader(data.Encode()))
+}
