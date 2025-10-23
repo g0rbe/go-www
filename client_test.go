@@ -5,7 +5,7 @@ import (
 	"git.gorbe.io/go/www/authentication"
 )
 
-func ExampleNewClientWithAuthentication_BearerToken() {
+func ExampleNewClientWithAuthentication_bearerToken() {
 
 	c := www.NewClientWithAuthentication(authentication.NewBearerToken("bearer-token"))
 
@@ -13,7 +13,7 @@ func ExampleNewClientWithAuthentication_BearerToken() {
 	c.Get("https://example.com/api/path")
 }
 
-func ExampleNewClientWithAuthentication_XApiKey() {
+func ExampleNewClientWithAuthentication_xApiKey() {
 
 	c := www.NewClientWithAuthentication(authentication.NewXApiKey("api-key"))
 
