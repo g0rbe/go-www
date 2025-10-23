@@ -18,13 +18,13 @@ func NewClient() *Client {
 	return (*Client)(&http.Client{})
 }
 
-// NewClientWithXApiKey returns a new *[Client] that
-// authenticates every request by setting the "X-Api-Key" header's value to the specified API key.
+// NewClientWithAuthentication returns a new *[Client] that
+// authenticates every request eith the given [http.RoundTripper].
 func NewClientWithAuthentication(roundtrip http.RoundTripper) *Client {
 	return (*Client)(&http.Client{Transport: roundtrip})
 }
 
-// Do sends an HTTP request and returns *Response].
+// Do sends an HTTP request and returns *[Response].
 func (c *Client) Do(req *http.Request) (*Response, error) {
 
 	resp, err := (*http.Client)(c).Do(req)
@@ -61,9 +61,9 @@ func (c *Client) Post(url string, contentType string, body io.Reader) (*Response
 	return c.Do(req)
 }
 
-// PostJSON issues a HTTP POST request to the specified URL.
+// PostJSON issues a HTTP POST request to the specified URL,
+// with v JSON encoded as the request body.
 //
-// The JSON encoded v is marshalled set as the request body.
 // The "Content-Type" header in the request is set to [ContentTypeJSON].
 func (c *Client) PostJSON(url string, v any) (*Response, error) {
 
@@ -90,9 +90,9 @@ func (c *Client) Put(url string, contentType string, body io.Reader) (*Response,
 	return c.Do(req)
 }
 
-// PutJSON issues a HTTP PUT request to the specified URL.
+// PutJSON issues a HTTP PUT request to the specified URL,
+// with v JSON encoded as the request body.
 //
-// The JSON encoded v is marshalled set as the request body.
 // The "Content-Type" header in the request is set to [ContentTypeJSON].
 func (c *Client) PutJSON(url string, v any) (*Response, error) {
 

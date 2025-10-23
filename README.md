@@ -3,6 +3,9 @@
 [![Go Reference](https://pkg.go.dev/badge/git.gorbe.io/go/www.svg)](https://pkg.go.dev/git.gorbe.io/go/www)
 [![Go Report Card](https://goreportcard.com/badge/git.gorbe.io/go/www)](https://goreportcard.com/report/git.gorbe.io/go/www)
 
+Package `www` provides HTTP utility functions.
+
+## Get
 ```bash
 go get git.gorbe.io/go/www@latest
 ```
