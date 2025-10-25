@@ -1,4 +1,5 @@
-package authentication
+// Package bearertoken provides bearer authentication with token
+package bearertoken
 
 import "net/http"
 
@@ -15,7 +16,7 @@ type BearerToken struct {
 }
 
 // NewBearerToken use token in bearer authentication.
-func NewBearerToken(token string) *BearerToken {
+func New(token string) *BearerToken {
 	return &BearerToken{Token: token}
 }
 

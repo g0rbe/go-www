@@ -1,13 +1,13 @@
-package authentication_test
+package header_test
 
 import (
 	"git.gorbe.io/go/www"
-	"git.gorbe.io/go/www/authentication"
+	"git.gorbe.io/go/www/authentication/header"
 )
 
 func ExampleHeader() {
 
-	h := authentication.NewHeader("Authentication-Header", "sup3rs3cr3t")
+	h := header.New("Authentication-Header", "sup3rs3cr3t")
 
 	client := www.NewClientWithAuthentication(h)
 

@@ -1,13 +1,13 @@
-package authentication_test
+package bearertoken_test
 
 import (
 	"git.gorbe.io/go/www"
-	"git.gorbe.io/go/www/authentication"
+	"git.gorbe.io/go/www/authentication/bearertoken"
 )
 
 func ExampleBearerToken() {
 
-	bt := authentication.NewBearerToken("sup3rs3cr3t")
+	bt := bearertoken.New("sup3rs3cr3t")
 
 	client := www.NewClientWithAuthentication(bt)
 

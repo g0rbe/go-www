@@ -1,4 +1,5 @@
-package authentication
+// Package header provides HTTP authentication with arbitrary header key and value
+package header
 
 import "net/http"
 
@@ -15,7 +16,7 @@ type Header struct {
 }
 
 // NewHeader returns a new *[Header].
-func NewHeader(key string, value string) *Header {
+func New(key string, value string) *Header {
 	return &Header{Key: key, Value: value}
 }
 

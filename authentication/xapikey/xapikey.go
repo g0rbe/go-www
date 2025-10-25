@@ -1,4 +1,5 @@
-package authentication
+// Package xapikey provides HTTP authentication with X-Api-Key
+package xapikey
 
 import "net/http"
 
@@ -13,8 +14,8 @@ type XApiKey struct {
 	Transport http.RoundTripper
 }
 
-// NewXApiKey returns a new *[XApiKey].
-func NewXApiKey(key string) *XApiKey {
+// New returns a pointer to a newly allocated [XApiKey].
+func New(key string) *XApiKey {
 	return &XApiKey{Key: key}
 }
 

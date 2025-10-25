@@ -1,13 +1,13 @@
-package authentication_test
+package xapikey_test
 
 import (
 	"git.gorbe.io/go/www"
-	"git.gorbe.io/go/www/authentication"
+	"git.gorbe.io/go/www/authentication/xapikey"
 )
 
 func ExampleXApiKey() {
 
-	x := authentication.NewXApiKey("sup3rs3cr3t")
+	x := xapikey.New("sup3rs3cr3t")
 
 	client := www.NewClientWithAuthentication(x)
 

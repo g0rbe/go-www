@@ -5,6 +5,8 @@
 
 Package `www` provides HTTP utility functions.
 
+Common authentication methods and functions for various services can be found at the [authentication](https://pkg.go.dev/git.gorbe.io/go/www/authentication) directory.
+
 ## Get
 ```bash
 go get git.gorbe.io/go/www@latest
