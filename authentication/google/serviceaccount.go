@@ -49,6 +49,11 @@ func ServiceAccountFromJSONFile(name string) (*ServiceAccount, error) {
 	return ServiceAccountFromJSON(data)
 }
 
+// SetScopes sets the OAuth2 scope information.
+func (sa *ServiceAccount) SetScope(scope ...string) {
+	sa.Scopes = scope
+}
+
 // transport returns the [ServiceAccount.Transport] if set
 // or
 // [http.DefaultTransport] if nil.
