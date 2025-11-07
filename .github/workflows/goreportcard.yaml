@@ -1,6 +1,8 @@
 name: Go Report Card
 on: [push]
 
+enable-email-notifications: true
+
 jobs:
   generate-report:
     runs-on: debian

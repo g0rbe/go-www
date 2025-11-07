@@ -1,6 +1,8 @@
 name: go test
 on: [push]
 
+enable-email-notifications: true
+
 jobs:
   go-test:
     runs-on: debian
