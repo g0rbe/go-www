@@ -15,7 +15,7 @@ func Do(req *http.Request) (*Response, error) {
 	return DefaultClient.Do(req)
 }
 
-// Get uses [DefaultCLient] to issues a HTTP GET request to the specified URL.
+// Get uses [DefaultClient] to issues a HTTP GET request to the specified URL.
 func Get(url string) (*Response, error) {
 	return DefaultClient.Get(url)
 }

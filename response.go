@@ -38,7 +38,7 @@ func ParseResponse(resp *http.Response) (*Response, error) {
 // Unmarshal unmarshals the [Response.Body] based on the response `Content-Type`:
 //   - [json.Unmarhsal] if `Content-Type` is `application/json`
 //   - [xml.Unmarshal]  if `Content-Type` is `application/xml`
-//   - [error] otherwise
+//   - [builtin.error] otherwise
 func (r *Response) Unmarshal(v any) error {
 
 	contentType, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
