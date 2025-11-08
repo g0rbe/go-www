@@ -7,30 +7,34 @@ import (
 	"git.gorbe.io/go/www/authentication/xapikey"
 )
 
-func ExampleNewClientWithAuthentication_bearerToken() {
+func ExampleNewClient_bearerToken() {
 
-	c := www.NewClientWithAuthentication(bearertoken.New("bearer-token"))
+	c := www.NewClient()
+	c.SetAuthentication(bearertoken.New("bearer-token"))
 
 	// Issues an HTTP with Bearer Authentication
 	c.Get("https://example.com/api/path")
 }
 
-func ExampleNewClientWithAuthentication_xApiKey() {
+func ExampleNewClient_xApiKey() {
 
-	c := www.NewClientWithAuthentication(xapikey.New("api-key"))
+	c := www.NewClient()
+	c.SetAuthentication(xapikey.New("api-key"))
 
 	// Issues an HTTP with X-Api-Key set to "api-key"
 	c.Get("https://example.com/api/path")
 }
 
-func ExampleNewClientWithAuthentication_googleServiceAccount() {
+func ExampleNewClient_googleServiceAccount() {
+
+	c := www.NewClient()
 
 	sa, err := google.ServiceAccountFromJSONFile("/path/to/key.json")
 	if err != nil {
 		/// handle error
 	}
 
-	c := www.NewClientWithAuthentication(sa)
+	c.SetAuthentication(sa)
 
 	c.Get("https://example.com/api/path")
 }

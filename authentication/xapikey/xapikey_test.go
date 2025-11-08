@@ -7,9 +7,9 @@ import (
 
 func ExampleXApiKey() {
 
-	x := xapikey.New("sup3rs3cr3t")
+	client := www.NewClient()
 
-	client := www.NewClientWithAuthentication(x)
+	client.SetAuthentication(xapikey.New("sup3rs3cr3t"))
 
 	client.Get("https://example.com/api/path")
 	// GET /api/path HTTP/3

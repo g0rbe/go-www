@@ -24,24 +24,28 @@ func ExampleServiceAccount_serviceAccountFromJSON() {
 }
 `)
 
+	client := www.NewClient()
+
 	sa, err := google.ServiceAccountFromJSON(jsonKey)
 	if err != nil {
 		/// handle error
 	}
 
-	c := www.NewClientWithAuthentication(sa)
+	client.SetAuthentication(sa)
 
-	c.Get("...")
+	client.Get("...")
 }
 
 func ExampleServiceAccount_serviceAccountFromJSONFile() {
+
+	client := www.NewClient()
 
 	sa, err := google.ServiceAccountFromJSONFile("/path/to/key.json")
 	if err != nil {
 		/// handle error
 	}
 
-	c := www.NewClientWithAuthentication(sa)
+	client.SetAuthentication(sa)
 
-	c.Get("...")
+	client.Get("...")
 }

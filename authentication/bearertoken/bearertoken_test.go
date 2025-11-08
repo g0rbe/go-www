@@ -9,7 +9,8 @@ func ExampleBearerToken() {
 
 	bt := bearertoken.New("sup3rs3cr3t")
 
-	client := www.NewClientWithAuthentication(bt)
+	client := www.NewClient()
+	client.SetAuthentication(bt)
 
 	client.Get("https://example.com/api/path")
 	// GET /api/path HTTP/3

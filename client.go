@@ -3,11 +3,18 @@ package www
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"git.gorbe.io/go/www/authentication"
+)
+
+var (
+	ErrTooManyRedirects = errors.New("too many redirects")
 )
 
 type Client http.Client
@@ -18,10 +25,31 @@ func NewClient() *Client {
 	return (*Client)(&http.Client{})
 }
 
-// NewClientWithAuthentication returns a new *[Client] that
-// authenticates every request eith the given [http.RoundTripper].
-func NewClientWithAuthentication(roundtrip http.RoundTripper) *Client {
-	return (*Client)(&http.Client{Transport: roundtrip})
+// SetAuthentication sets *[Client] to authenticates every request with the given [git.gorbe.io/go/www/authentication.Authentication] auth.
+func (c *Client) SetAuthentication(auth authentication.Authentication) {
+	c.Transport = auth
+}
+
+// MaxRedirections sets the maximum number of redirections to follow.
+//
+// If maximum redirections reached, the Client's Get method returns
+// both the Response (with its Body closed)
+// and CheckRedirect's error (wrapped in a url.Error)
+// instead of issuing the next req.
+//
+// This function panics if n is less than zero (n < 0)!
+func (c *Client) MaxRedirections(n int) {
+	if n < 0 {
+		panic(fmt.Sprintf("invalid number for MaxRedirections: %d", n))
+	}
+
+	// Based on: https://cs.opensource.google/go/go/+/refs/tags/go1.25.4:src/net/http/client.go;l=820
+	c.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+		if len(via) >= n {
+			return ErrTooManyRedirects
+		}
+		return nil
+	}
 }
 
 // Do sends an HTTP request and returns *[Response].
