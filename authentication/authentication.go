@@ -1,7 +1,5 @@
-/*
-Package authentication provides HTTP authentication
-
-The authentications are implemented with the [http.RoundTripper].
-The authentication header are added to every request with the RoundTrip() method.
-*/
+// Package authentication provides HTTP authentication
 package authentication
+import "net/http"
+
+type Authentication = http.RoundTripper
